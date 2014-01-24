@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<title>Presence Demo</title>
+  <meta charset="utf-8">
+  <title>Presence Demo</title>
 
-	<link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css">
 <script src='presence.js'></script>
 <script type="text/javascript">
 
-	window.onload = function() {
+  window.onload = function() {
 
   // Get references to elements on the page.
   var form = document.getElementById('message-form');
@@ -19,26 +19,21 @@
   var sendBtn = document.getElementById('send');
   var connectedUsers = document.getElementById('listUsers');
   var textarea = document.getElementById('message');
-  // Create a new WebSocket.
   
-  var socket = joinNetwork("SampleNick","Red");
-  console.log('Made connection');
+  var presenceObject = new SugarPresence();
 
-  // Handle any errors that occur.
-  socket.onerror = function(error) {
-    console.log('WebSocket Error: ' + error);
-  };
-
-
+  presenceObject.joinNetwork("sampleusername","red",function(userid) {
+    console.log('Made socket connection(client side) with user '+userid);
+  }) ;
+  
   // Show a connected message when the WebSocket is opened.
-  socket.onopen = function(event) {
+  presenceObject.onConnectionOpen(function(event) {
     socketStatus.innerHTML = 'Connected to: ' + event.currentTarget.URL;
     socketStatus.className = 'open';
-  };
-
-
+  }) ;
+ 
   // Handle messages sent by the server.
-  socket.onmessage = function(event) {
+  presenceObject.onDataReceived(function(event) {
     var message = event.data;
     
     try {
@@ -60,14 +55,14 @@
             console.log('INVALID JSON FORMAT! ', json);
         }
                                   
-  };
+  });
 
 
   // Show a disconnected message when the WebSocket is closed.
-  socket.onclose = function(event) {
+  presenceObject.onConnectionClose(function(event) {
     socketStatus.innerHTML = 'Disconnected from WebSocket.';
     socketStatus.className = 'closed';
-  };
+  });
 
 
   // Send a message when the form is submitted.
@@ -80,10 +75,10 @@
     // Send the message through the WebSocket.
     if(message=="")
     {
-    	message = 'PING'
+      message = 'PING'
     }
     console.log(message);
-    sendMessage("SampleGroupId",message);
+    presenceObject.sendMessage("SampleGroupId",message);
     
 
     // Add the message to the messages list.
@@ -99,9 +94,9 @@
 
   // Close the WebSocket connection when the close button is clicked.
   closeBtn.onclick = function(e) {
-    leaveNetwork();
+    presenceObject.leaveNetwork();
     console.log(sendBtn)
-     sendBtn.innerHTML = 'Connect'	
+     sendBtn.innerHTML = 'Connect'  
     // Close the WebSocket.
    
 
@@ -109,30 +104,26 @@
   };
 
   connectedUsers.onclick = function(e){
-    console.log(listUsers());
+    console.log("call back to listUsers()");
   }
 
 };
 
-	</script>
+  </script>
 </head>
 <body>
-	<div id="page-wrapper">
-		<h1>Presence Demo</h1>
+  <div id="page-wrapper">
+    <h1>Presence Demo</h1>
 
-		<div id="status">Connecting...</div>
+    <div id="status">Connecting...</div>
 
-		<ul id="messages"></ul>
-		
-			<textarea id="message" placeholder="Key in your user name" required></textarea>
-			<button id="send" type="submit">Send User Name</button>
-			<button type="button" id="close">Close Connection</button>
+    <ul id="messages"></ul>
+    
+      <textarea id="message" placeholder="Key in your user name" required></textarea>
+      <button id="send" type="submit">Send User Name</button>
+      <button type="button" id="close">Close Connection</button>
       <button id="listUsers">List all connected users</button>
-		
-	</div>
-
-	
-	
-
+    
+  </div>
 </body>
 </html>
