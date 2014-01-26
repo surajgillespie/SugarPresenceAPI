@@ -1,7 +1,7 @@
 SugarPresenceAPI
 ================
 
-Implementing the Sugar Presence service in Sugarizer
+Implementing Sugar Presence service in Sugarizer
 
 ================
 
