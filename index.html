@@ -50,8 +50,7 @@
                     messagesList.innerHTML += '<li class="received"><span>Received:</span>' + json.data.text + '</li>';
 
                 } else if (json.type === 'responseUserList') { // it's a single message/ping
-                    //messagesList.innerHTML += '<li class="received"><span>Received:</span>' + json.data.text + '</li>';
-                    console.log(json.data);
+                    messagesList.innerHTML += '<li class="received"><span>Received:</span>' + json.data + '</li>';
                 } else {
                     console.log('INVALID JSON FORMAT! ', json);
                 }
