@@ -49,7 +49,9 @@
                 } else if (json.type === 'message') { // it's a single message/ping
                     messagesList.innerHTML += '<li class="received"><span>Received:</span>' + json.data.text + '</li>';
 
-                    console.log("Connected users: " + json.data.connectedClients);
+                } else if (json.type === 'responseUserList') { // it's a single message/ping
+                    //messagesList.innerHTML += '<li class="received"><span>Received:</span>' + json.data.text + '</li>';
+                    console.log(json.data);
                 } else {
                     console.log('INVALID JSON FORMAT! ', json);
                 }
@@ -61,7 +63,6 @@
                 socketStatus.innerHTML = 'Disconnected from WebSocket.';
                 socketStatus.className = 'closed';
             });
-
 
             // Send a message when the form is submitted.
             sendBtn.onclick = function (e) {
@@ -88,20 +89,17 @@
                 return false;
             };
 
-
             // Close the WebSocket connection when the close button is clicked.
             closeBtn.onclick = function (e) {
                 presenceObject.leaveNetwork();
                 console.log(sendBtn)
                 sendBtn.innerHTML = 'Connect'
                 // Close the WebSocket.
-
-
                 return false;
             };
 
             connectedUsers.onclick = function (e) {
-                console.log("call back to listUsers()");
+                presenceObject.listUsers();
             }
 
         };

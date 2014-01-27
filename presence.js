@@ -40,15 +40,19 @@
       };
   }
 
-  SugarPresence.prototype.sendMessage = function (group_id, data) {
-      console.log(data);
-      socket.send(data);
+  SugarPresence.prototype.sendMessage = function (group_id, mdata) {
+      console.log(mdata);
+      var sjson = JSON.stringify({
+          type: 'message',
+          data: mdata
+      });
+      socket.send(sjson);
   }
 
-  /*
-  function listUsers()
-  {
-    //
-    //*code 
-    return ("Connected Users");
-  }*/
+
+  SugarPresence.prototype.listUsers = function () {
+      var sjson = JSON.stringify({
+          type: 'requestUserList'
+      });
+      socket.send(sjson);
+  }
