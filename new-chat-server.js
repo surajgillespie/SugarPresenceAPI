@@ -65,8 +65,9 @@ wsServer.on('request', function (request) {
                 clients[index][0] = userName;
                 //connection.sendUTF(userName);
                 connection.sendUTF(JSON.stringify({
-                    type: 'first',
-                    data: userName
+                    type: 'message',
+                    data: userName +' has been registered',
+                    author: userName
                 }));
                 console.log((new Date()) + ' User is known as: ' + userName);
 
@@ -95,15 +96,10 @@ wsServer.on('request', function (request) {
                     // broadcast message to all connected clients
                     //var json = JSON.stringify({ type:'message', data: obj });
                     console.log("Just a message");
-                    var obj = {
-                        author: userName,
-                        text: rjson.data,
-                    };
-
-                    // broadcast message to all connected clients
+        
                     var json = JSON.stringify({
                         type: 'message',
-                        data: obj
+                        data: rjson.data
                     });
                     connection.sendUTF(json);
                 }
