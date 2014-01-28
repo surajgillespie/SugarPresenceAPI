@@ -4,7 +4,7 @@
 
   }
 
-  SugarPresence.prototype.joinNetwork = function (nickname, colour, callback) {
+  SugarPresence.prototype.joinNetwork = function (userInfo, callback) {
 
       socket = new WebSocket('ws://localhost:8039');
       console.log('Created socket');

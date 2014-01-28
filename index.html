@@ -21,8 +21,9 @@
             var textarea = document.getElementById('message');
 
             var presenceObject = new SugarPresence();
+            var userInfo = ["username","colour"];
 
-            presenceObject.joinNetwork("sampleusername", "red", function (userid) {
+            presenceObject.joinNetwork(userInfo, function (userid) {
                 console.log('Made socket connection(client side) with user ' + userid);
             });
 
