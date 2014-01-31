@@ -21,11 +21,9 @@
             var textarea = document.getElementById('message');
 
             var presenceObject = new SugarPresence();
-            var userInfo = ["username","colour"];
 
-            presenceObject.joinNetwork(userInfo, function (userid) {
-                console.log('Made socket connection(client side) with user ' + userid);
-            });
+            var userInfo = ["username","colour"];
+            presenceObject.joinNetwork(userInfo);
 
             // Show a connected message when the WebSocket is opened.
             presenceObject.onConnectionOpen(function (event) {
@@ -47,7 +45,8 @@
                 if (json.type === 'message') { // it's a single message/ping
                     messagesList.innerHTML += '<li class="received"><span>Received:</span>' + json.data + '</li>';
 
-                } else if (json.type === 'responseUserList') { // listing out all users
+                } else if (json.type === 'responseUserList') { // it's a single message/ping
+                    //messagesList.innerHTML += '<li class="received"><span>Received:</span>' + json.data.text + '</li>';
                     messagesList.innerHTML += '<li class="received"><span>Received:</span>' + json.data + '</li>';
                 } else {
                     console.log('INVALID JSON FORMAT! ', json);
@@ -96,7 +95,7 @@
             };
 
             connectedUsers.onclick = function (e) {
-                presenceObject.listUsers();
+                presenceObject.listUsers("SampleGroupId");
             }
 
         };
