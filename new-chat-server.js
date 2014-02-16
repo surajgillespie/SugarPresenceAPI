@@ -22,10 +22,10 @@ var clients = [];
 /**
  * HTTP server
  */
-var server = http.createServer(function (request, response) {
+var server = http.createServer(function(request, response) {
     // Not important for us. We're writing WebSocket server, not HTTP server
 });
-server.listen(webSocketsServerPort, function () {
+server.listen(webSocketsServerPort, function() {
     console.log((new Date()) + " Server is listening on port " + webSocketsServerPort);
 });
 
@@ -40,7 +40,7 @@ var wsServer = new webSocketServer({
 
 // This callback function is called every time someone
 // tries to connect to the WebSocket server
-wsServer.on('request', function (request) {
+wsServer.on('request', function(request) {
     console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
 
     // accept connection - you should check 'request.origin' to make sure that
@@ -55,7 +55,7 @@ wsServer.on('request', function (request) {
 
 
     // user sent some message
-    connection.on('message', function (message) {
+    connection.on('message', function(message) {
         if (message.type === 'utf8') { // accept only text
             if (userName === false) { // first message sent by user is their name
                 // remember user name
@@ -66,7 +66,7 @@ wsServer.on('request', function (request) {
                 //connection.sendUTF(userName);
                 connection.sendUTF(JSON.stringify({
                     type: 'message',
-                    data: userName +' has been registered',
+                    data: userName + ' has been registered',
                     author: userName
                 }));
                 console.log((new Date()) + ' User is known as: ' + userName);
@@ -78,11 +78,13 @@ wsServer.on('request', function (request) {
                 console.log("Connected clients");
 
                 var connectedUsernames = [];
-
+                var j = 0;
                 //storing all connected clients in connectedUserNames
                 for (var i = 0; i < clients.length; i++) {
-                    connectedUsernames[i] = clients[i][0];
-                    console.log(clients[i][0]);
+                    if (clients[i] != null) {
+                        connectedUsernames[j++] = clients[i][0];
+                        console.log(clients[i][0]);
+                    }
                 }
 
                 var rjson = JSON.parse(message.utf8Data);
@@ -96,7 +98,7 @@ wsServer.on('request', function (request) {
                     // broadcast message to all connected clients
                     //var json = JSON.stringify({ type:'message', data: obj });
                     console.log("Just a message");
-        
+
                     var json = JSON.stringify({
                         type: 'message',
                         data: rjson.data
@@ -109,12 +111,12 @@ wsServer.on('request', function (request) {
     });
 
     // user disconnected
-    connection.on('close', function (connection) {
+    connection.on('close', function(connection) {
         if (userName !== false) {
             console.log((new Date()) + " Peer " + userName + " disconnected.");
             // remove user from the list of connected clients
-            clients.splice(index, 1);
-            // push back user's color to be reused by another user
+            //clients.splice(index, 1);
+            clients[index] = null;
 
         }
     });
