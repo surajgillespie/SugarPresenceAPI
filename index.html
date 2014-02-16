@@ -31,27 +31,9 @@
                 socketStatus.className = 'open';
             });
 
-            // Handle messages sent by the server.
-            presenceObject.onDataReceived(function (event) {
-                var message = event.data;
-
-                try {
-                    var json = JSON.parse(message);
-                } catch (e) {
-                    console.log('This doesn\'t look like a valid JSON: ', message);
-                    return;
-                }
-
-                if (json.type === 'message') { // it's a single message/ping
-                    messagesList.innerHTML += '<li class="received"><span>Received:</span>' + json.data + '</li>';
-
-                } else if (json.type === 'responseUserList') { // it's a single message/ping
-                    //messagesList.innerHTML += '<li class="received"><span>Received:</span>' + json.data.text + '</li>';
-                    messagesList.innerHTML += '<li class="received"><span>Received:</span>' + json.data + '</li>';
-                } else {
-                    console.log('INVALID JSON FORMAT! ', json);
-                }
-
+            // Handle messages received.
+            presenceObject.onDataReceived(function (msg) {
+                messagesList.innerHTML += '<li class="received"><span>Received:</span>' + msg + '</li>';
             });
 
             // Show a disconnected message when the WebSocket is closed.
@@ -95,7 +77,10 @@
             };
 
             connectedUsers.onclick = function (e) {
-                presenceObject.listUsers("SampleGroupId");
+                presenceObject.listUsers("SampleGroupId",function(list)
+                    {
+                        messagesList.innerHTML += '<li class="received"><span>Received:</span>' + list + '</li>';
+                    });
             }
 
         };
