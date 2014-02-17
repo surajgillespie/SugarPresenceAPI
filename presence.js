@@ -1,5 +1,20 @@
   function SugarPresence() {
       var socket;
+
+      this.onMessageReceived = function(callback) {
+          this.socket.onmessage = function(event) {
+
+              var edata = event.data;
+
+              try {
+                  var json = JSON.parse(edata);
+              } catch (e) {
+                  console.log('This doesn\'t look like a valid JSON: ', edata);
+                  return;
+              }
+              callback(json);
+          };
+      } //will be called by functions to retrieve the message send from server
   }
 
   SugarPresence.prototype.joinNetwork = function(userInfo) {
@@ -31,23 +46,6 @@
       });
 
   } //for messages received from users
-
-  SugarPresence.prototype.onMessageReceived = function(callback) {
-      this.socket.onmessage = function(event) {
-
-          var edata = event.data;
-
-          try {
-              var json = JSON.parse(edata);
-          } catch (e) {
-              console.log('This doesn\'t look like a valid JSON: ', edata);
-              return;
-          }
-
-          callback(json);
-
-      };
-  } //will be called by functions to retrieve the message send from server
 
   SugarPresence.prototype.onConnectionClose = function(callback) {
       this.socket.onclose = function(event) {
