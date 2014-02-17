@@ -66,7 +66,7 @@ wsServer.on('request', function(request) {
                 //connection.sendUTF(userName);
                 connection.sendUTF(JSON.stringify({
                     type: 'message',
-                    data: userName + ' has been registered',
+                    data: userName + ' has been registered with user id = ' + index,
                     author: userName
                 }));
                 console.log((new Date()) + ' User is known as: ' + userName);
