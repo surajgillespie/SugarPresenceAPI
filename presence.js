@@ -15,9 +15,9 @@
                   console.log('This doesn\'t look like a valid JSON: ', edata);
                   return;
               }
-              if (json.type == '1') {
+              if (json.type == '1') {//type message
                   that.receivedDataCallback(json.data);
-              } else if (json.type === '2') {
+              } else if (json.type === '2') {//type userlist
                   that.listUsersCallback(json.data);
               }
           };
