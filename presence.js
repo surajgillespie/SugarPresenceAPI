@@ -38,6 +38,7 @@
   }
 
   SugarPresence.prototype.onConnectionOpen = function(callback) {
+      this.onMessageReceived();
       this.socket.onopen = function(event) {
           callback(event);
       };
