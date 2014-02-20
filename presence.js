@@ -2,6 +2,8 @@
       var socket;
       var listUsersCallback = function() {};
       var receivedDataCallback = function() {};
+      var that = this;
+
       this.onMessageReceived = function(callback) {
           this.socket.onmessage = function(event) {
 
