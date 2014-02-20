@@ -1,7 +1,7 @@
   function SugarPresence() {
       var socket;
-      var listUsersCallback = function() { };
-      var receivedDataCallback = function() { };
+      var listUsersCallback = function() {};
+      var receivedDataCallback = function() {};
       this.onMessageReceived = function(callback) {
           this.socket.onmessage = function(event) {
 
@@ -13,11 +13,11 @@
                   console.log('This doesn\'t look like a valid JSON: ', edata);
                   return;
               }
-               if (json.type == '1')
-                {
-                that.receivedDataCallback(json.data);}
-             else if (json.type === '2')
-                {that.listUsersCallback(json.data);}
+              if (json.type == '1') {
+                  that.receivedDataCallback(json.data);
+              } else if (json.type === '2') {
+                  that.listUsersCallback(json.data);
+              }
           };
       } //will be called by functions to retrieve the message send from server
   }
@@ -67,7 +67,7 @@
       var sjson = JSON.stringify({
           type: '2'
       });
-    
-    this.listUsersCallback = callback;
-    this.socket.send(sjson);
+
+      this.listUsersCallback = callback;
+      this.socket.send(sjson);
   }
