@@ -1,6 +1,7 @@
   function SugarPresence() {
       var socket;
-
+      var listUsersCallback = function() { };
+      var receivedDataCallback = function() { };
       this.onMessageReceived = function(callback) {
           this.socket.onmessage = function(event) {
 
@@ -12,7 +13,11 @@
                   console.log('This doesn\'t look like a valid JSON: ', edata);
                   return;
               }
-              callback(json);
+               if (json.type == '1')
+                {
+                that.receivedDataCallback(json.data);}
+             else if (json.type === '2')
+                {that.listUsersCallback(json.data);}
           };
       } //will be called by functions to retrieve the message send from server
   }
@@ -39,12 +44,7 @@
   }
 
   SugarPresence.prototype.onDataReceived = function(callback) {
-
-      this.onMessageReceived(function(message) {
-          if (message.type === 'message')
-              callback(message.data);
-      });
-
+      this.receivedDataCallback = callback;
   } //for messages received from users
 
   SugarPresence.prototype.onConnectionClose = function(callback) {
@@ -56,7 +56,7 @@
   SugarPresence.prototype.sendMessage = function(group_id, mdata) {
       console.log(mdata);
       var sjson = JSON.stringify({
-          type: 'message',
+          type: '1',
           data: mdata
       });
       this.socket.send(sjson);
@@ -65,12 +65,9 @@
 
   SugarPresence.prototype.listUsers = function(group_id, callback) {
       var sjson = JSON.stringify({
-          type: 'requestUserList'
+          type: '2'
       });
-      this.socket.send(sjson);
-
-      this.onMessageReceived(function(message) {
-          if (message.type === 'responseUserList')
-              callback(message.data);
-      });
+    
+    this.listUsersCallback = callback;
+    this.socket.send(sjson);
   }
