@@ -15,9 +15,9 @@
                   console.log('This doesn\'t look like a valid JSON: ', edata);
                   return;
               }
-              if (json.type == '1') {//type message
+              if (json.type === 0) { //type message
                   that.receivedDataCallback(json.data);
-              } else if (json.type === '2') {//type userlist
+              } else if (json.type === 1) { //type userlist
                   that.listUsersCallback(json.data);
               }
           };
@@ -59,7 +59,7 @@
   SugarPresence.prototype.sendMessage = function(group_id, mdata) {
       console.log(mdata);
       var sjson = JSON.stringify({
-          type: '1',
+          type: 0,
           data: mdata
       });
       this.socket.send(sjson);
@@ -68,7 +68,7 @@
 
   SugarPresence.prototype.listUsers = function(group_id, callback) {
       var sjson = JSON.stringify({
-          type: '2'
+          type: 1
       });
 
       this.listUsersCallback = callback;

@@ -65,7 +65,7 @@ wsServer.on('request', function(request) {
                 clients[index][0] = userName;
                 //connection.sendUTF(userName);
                 connection.sendUTF(JSON.stringify({
-                    type: '1',
+                    type: 0,
                     data: userName + ' has been registered with user id = ' + index,
                     author: userName
                 }));
@@ -89,18 +89,18 @@ wsServer.on('request', function(request) {
 
                 var rjson = JSON.parse(message.utf8Data);
 
-                if (rjson.type === '2') {
+                if (rjson.type === 1) {
                     connection.sendUTF(JSON.stringify({
-                        type: '2',
+                        type: 1,
                         data: connectedUsernames
                     }));
-                } else if (rjson.type === '1') {
+                } else if (rjson.type === 0) {
                     // broadcast message to all connected clients
                     //var json = JSON.stringify({ type:'message', data: obj });
                     console.log("Just a message");
 
                     var json = JSON.stringify({
-                        type: '1',
+                        type: 0,
                         data: rjson.data
                     });
                     connection.sendUTF(json);
