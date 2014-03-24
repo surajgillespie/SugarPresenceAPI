@@ -1,76 +1,79 @@
-  function SugarPresence() {
-      var socket;
-      var listUsersCallback = function() {};
-      var receivedDataCallback = function() {};
-      var that = this;
+    var callbackArray = []
 
-      this.onMessageReceived = function(callback) {
-          this.socket.onmessage = function(event) {
+        function SugarPresence() {
+            var socket;
 
-              var edata = event.data;
+            var that = this;
+            var listUsersCallback = function() {};
+            var receivedDataCallback = function() {};
+            callbackArray = [listUsersCallback, receivedDataCallback]
+            this.onMessageReceived = function(callback) {
+                this.socket.onmessage = function(event) {
 
-              try {
-                  var json = JSON.parse(edata);
-              } catch (e) {
-                  console.log('This doesn\'t look like a valid JSON: ', edata);
-                  return;
-              }
-              if (json.type === 0) { //type message
-                  that.receivedDataCallback(json.data);
-              } else if (json.type === 1) { //type userlist
-                  that.listUsersCallback(json.data);
-              }
-          };
-      } //will be called by functions to retrieve the message send from server
-  }
+                    var edata = event.data;
 
-  SugarPresence.prototype.joinNetwork = function(userInfo) {
+                    try {
+                        var json = JSON.parse(edata);
+                    } catch (e) {
+                        console.log('This doesn\'t look like a valid JSON: ', edata);
+                        return;
+                    }
 
-      this.socket = new WebSocket('ws://localhost:8039');
-      console.log('Created socket');
+                    if (json.type < callbackArray.length)
+                        callbackArray[json.type](json.data); // Call the matching callback
 
-      this.socket.onerror = function(error) {
-          console.log('WebSocket Error: ' + error);
-      };
-  }
+                };
+            } //will be called by functions to retrieve the message send from server
+        }
 
-  SugarPresence.prototype.leaveNetwork = function() {
-      this.socket.close();
-      console.log('Socket closed');
-  }
+    SugarPresence.prototype.joinNetwork = function(userInfo) {
 
-  SugarPresence.prototype.onConnectionOpen = function(callback) {
-      this.onMessageReceived();
-      this.socket.onopen = function(event) {
-          callback(event);
-      };
-  }
+        this.socket = new WebSocket('ws://localhost:8039');
+        console.log('Created socket');
 
-  SugarPresence.prototype.onDataReceived = function(callback) {
-      this.receivedDataCallback = callback;
-  } //for messages received from users
+        this.socket.onerror = function(error) {
+            console.log('WebSocket Error: ' + error);
+        };
+    }
 
-  SugarPresence.prototype.onConnectionClose = function(callback) {
-      this.socket.onclose = function(event) {
-          callback(event);
-      };
-  }
+    SugarPresence.prototype.leaveNetwork = function() {
+        this.socket.close();
+        console.log('Socket closed');
+    }
 
-  SugarPresence.prototype.sendMessage = function(group_id, mdata) {
-      console.log(mdata);
-      var sjson = JSON.stringify({
-          type: 0,
-          data: mdata
-      });
-      this.socket.send(sjson);
-  }
+    SugarPresence.prototype.onConnectionOpen = function(callback) {
+        this.onMessageReceived();
+        this.socket.onopen = function(event) {
+            callback(event);
+        };
+    }
+
+    SugarPresence.prototype.onDataReceived = function(callback) {
+        callbackArray[0] = callback;
+        //this.receivedDataCallback = callback;
+    } //for messages received from users
+
+    SugarPresence.prototype.onConnectionClose = function(callback) {
+        this.socket.onclose = function(event) {
+            callback(event);
+        };
+    }
+
+    SugarPresence.prototype.sendMessage = function(group_id, mdata) {
+        console.log(mdata);
+        var sjson = JSON.stringify({
+            type: 0,
+            data: mdata
+        });
+        this.socket.send(sjson);
+    }
 
 
-  SugarPresence.prototype.listUsers = function(group_id, callback) {
-      var sjson = JSON.stringify({
-          type: 1
-      });
-
-      this.listUsersCallback = callback;
-      this.socket.send(sjson);
-  }
+    SugarPresence.prototype.listUsers = function(group_id, callback) {
+        var sjson = JSON.stringify({
+            type: 1
+        });
+        callbackArray[1] = callback;
+        //this.listUsersCallback = callback;
+        this.socket.send(sjson);
+    }
